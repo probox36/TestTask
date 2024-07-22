@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,11 +16,13 @@ import java.util.regex.Pattern;
 public class TextFile implements Comparable<TextFile> {
 
     private final File file;
+    private final File rootFolder;
     @Setter
     private ArrayList<TextFile> dependencies;
 
-    public TextFile(File file) {
+    public TextFile(File file, File rootFolder) {
         this.file = file;
+        this.rootFolder = rootFolder;
         this.dependencies = new ArrayList<>();
     }
 
@@ -27,43 +30,69 @@ public class TextFile implements Comparable<TextFile> {
         dependencies.add(f);
     }
 
-    public void findDependencies(File rootFolder) throws IOException {
+    public void find1LDependencies() {
 
         ArrayList<TextFile> newDependencies = new ArrayList<>();
-        FileReader fr = new FileReader(file);
-        Scanner inp = new Scanner(fr);
+        FileReader fr;
+        try {
+            fr = new FileReader(file);
+            Scanner inp = new Scanner(fr);
 
-        while (inp.hasNext()) {
-            String text = inp.nextLine();
-            Pattern pattern = Pattern.compile("required ‘([^’]*)’");
-            Matcher matcher = pattern.matcher(text);
+            while (inp.hasNext()) {
+                String text = inp.nextLine();
+                Pattern pattern = Pattern.compile("required ‘([^’]*)’");
+                Matcher matcher = pattern.matcher(text);
 
-            if (matcher.find()) {
-                String filePath = rootFolder.getAbsolutePath() + "\\" + matcher.group(1);
-                TextFile newDependency = new TextFile(new File(filePath));
-                newDependencies.add(newDependency);
+                if (matcher.find()) {
+                        String filePath = rootFolder.getAbsolutePath() + "\\" + matcher.group(1);
+                        TextFile newDependency = new TextFile(new File(filePath), rootFolder);
+                        newDependencies.add(newDependency);
+                }
             }
+            dependencies = newDependencies;
+            fr.close();
+        } catch (IOException e) {
+            System.out.println("Got problems with fileReader");
+            e.printStackTrace();
         }
-
-        dependencies = newDependencies;
-        fr.close();
     }
 
     @Override
-    public int compareTo(TextFile otherFile) {
+    public int compareTo(TextFile other) {
+        int result = findDependency(this, other);
+        if (result == 0) { result = - findDependency(other, this); }
+        return result;
+    }
 
-        boolean thisContainsOther = this.dependencies.contains(otherFile);
-        boolean otherContainsThis = otherFile.dependencies.contains(this);
-        if (thisContainsOther && otherContainsThis) {
-            // Тут стоило бы ввести кастомный exception
-            throw new RuntimeException("Cyclic dependency: " + this.file.getName() + " and " + otherFile.file.getName());
-        } else if (thisContainsOther) {
-            return 1;
-        } else if (otherContainsThis) {
-            return -1;
-        } else {
-            return 0;
+    public static int findDependency(TextFile of, TextFile from) {
+        return findDependency(of, from, new Stack<>());
+    }
+
+    public static int findDependency(TextFile of, TextFile from, Stack<TextFile> stack) {
+
+        if (stack.contains(of)) {
+            stack.push(of);
+            throw new RuntimeException("Cyclic dependency: " + stack);
         }
+
+        stack.push(of);
+        if (of.dependencies.isEmpty()) { of.find1LDependencies(); }
+        int result = 0;
+
+        if (of.dependencies.contains(from)) {
+            result = 1;
+        } else {
+            for (TextFile tf: of.dependencies) {
+                if (tf.equals(from)) {
+                    return 1;
+                } else {
+                    result = findDependency(tf, from, stack) == 1 || result == 1 ? 1 : 0;
+                }
+            }
+        }
+
+        stack.pop();
+        return result;
     }
 
     @Override
