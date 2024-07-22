@@ -1,0 +1,26 @@
+@font-face {
+    font-family: 'Raleway';
+    src: url('../Raleway.ttf');
+}
+
+.Button {
+    background-color: rgb(231, 231, 231);
+    font-size: 18px;
+    color: rgb(32, 32, 32);
+    user-select: none;
+    font-weight: 500;
+    line-height: 40px;
+    font-family: 'Raleway';
+    height: 40px;
+    padding: 0px 12px;
+    width: fit-content;
+    border-radius: 15px;
+}
+
+.Button:hover {
+    background-color: rgb(241, 241, 241);
+}
+
+.Button:active {
+    background-color: rgb(221, 221, 221);
+}
