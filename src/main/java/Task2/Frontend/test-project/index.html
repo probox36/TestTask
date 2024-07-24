@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="index.css" />
+        <meta http-equiv="X-UA-Compatible" content="IE=7">
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="module" src="scripts.js"></script>
+    </head>
+    
+    <body>
+        <div class="Window">
+            <div class="LeftPane">
+
+                <label for="NameField">ID:</label>
+                <input class="NameField" type="text"></input>
+                <label for="NameField">Имя:</label>
+                <input class="NameField" type="text"></input>
+                <label for="LastNameField">Фамилия:</label>
+                <input class="LastNameField" type="text"></input>
+                <label for="PatronymicField">Отчество:</label>
+                <input class="PatronymicField" type="text"></input>
+                <label for="DOBField">Дата рождения:</label>
+                <input class="DOBField" type="date"></input>
+                <label for="GroupField">Группа:</label>
+                <input class="GroupField" type="text"></input>
+                
+                <div class="ButtonBox">
+                    <button class="addBtn">
+                        Добавить
+                    </button>
+                    <button class="deleteBtn">
+                        Удалить
+                    </button>
+                </div>
+
+                <script type="module">
+                    import { showMessage, echo } from "./scripts.js";
+                    document.querySelector('.addBtn').addEventListener('click', showMessage)
+                    document.querySelector('.deleteBtn').addEventListener('click', echo)
+                </script>
+                
+            </div>
+            
+            <div class="RightPane"></div>
+
+        </div>
+    </body>
+</html>
