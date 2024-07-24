@@ -4,15 +4,13 @@
         <meta http-equiv="X-UA-Compatible" content="IE=7">
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script type="module" src="scripts.js"></script>
+        <script type="module" src="index.js"></script>
     </head>
     
     <body>
         <div class="Window">
             <div class="LeftPane">
 
-                <label for="NameField">ID:</label>
-                <input class="NameField" type="text"></input>
                 <label for="NameField">Имя:</label>
                 <input class="NameField" type="text"></input>
                 <label for="LastNameField">Фамилия:</label>
@@ -33,15 +31,29 @@
                     </button>
                 </div>
 
+                <label for="IdField">ID:</label>
+                <input class="IdField" type="number"></input>
+
                 <script type="module">
-                    import { showMessage, echo } from "./scripts.js";
-                    document.querySelector('.addBtn').addEventListener('click', showMessage)
-                    document.querySelector('.deleteBtn').addEventListener('click', echo)
+                    import { addBtnOnClick, deleteBtnOnClick  } from "./index.js";
+                    document.querySelector('.addBtn').addEventListener('click', addBtnOnClick)
+                    document.querySelector('.deleteBtn').addEventListener('click', deleteBtnOnClick)
                 </script>
                 
             </div>
             
-            <div class="RightPane"></div>
+            <div class="RightPane">
+                <table>
+                    <tr class="TableHeader">
+                        <th>Id</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Отчество</th>
+                        <th>Дата рождения</th>
+                        <th>Группа</th>
+                    </tr>                   
+                  </table>
+            </div>
 
         </div>
     </body>
